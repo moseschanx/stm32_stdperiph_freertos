@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "stm32f10x.h": "c",
+        "common.h": "c",
+        "board_test.h": "c",
+        "segger_rtt.h": "c",
+        "stm32f10x_conf.h": "c",
+        "stm32mini_board_conf.h": "c",
+        "stm32f10x_flash.h": "c",
+        "freertos.h": "c",
+        "bsp_init.h": "c",
+        "freertosconfig.h": "c",
+        "projdefs.h": "c",
+        "portable.h": "c",
+        "ili9341v.h": "c",
+        "task.h": "c",
+        "portmacro.h": "c"
+    }
+}
