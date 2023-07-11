@@ -4,7 +4,6 @@
 /* Common include files */
 #include "stm32f10x.h"
 #include "stm32f10x_conf.h"
-#include "stm32mini_board_conf.h"
 #include "bsp_init.h"
 #include "SEGGER_RTT.h"
 
@@ -13,7 +12,6 @@
 #include "task.h"
 
 /* Driver include files */
-#include "ILI9341V.h"
 
 
 /* Delay function prototypes porting */
