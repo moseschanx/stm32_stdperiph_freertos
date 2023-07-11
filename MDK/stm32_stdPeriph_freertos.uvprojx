@@ -382,11 +382,6 @@
           <GroupName>User</GroupName>
           <Files>
             <File>
-              <FileName>board_test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER\board_test.c</FilePath>
-            </File>
-            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\main.c</FilePath>
@@ -545,13 +540,6 @@
         </Group>
         <Group>
           <GroupName>Drivers/ILI9341V</GroupName>
-          <Files>
-            <File>
-              <FileName>ILI9341V.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\ILI9341V.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>SEGGER_RTT</GroupName>
