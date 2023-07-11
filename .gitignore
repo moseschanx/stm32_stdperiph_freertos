@@ -1,0 +1,9 @@
+*.uvguix
+JLinkLog.txt
+
+*~
+*swp
+MDK/DebugConfig/*
+MDK/Listings/*
+MDK/Objects/*
+MDK/EventRecorderStub.scvd
