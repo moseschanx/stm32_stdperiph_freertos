@@ -2,6 +2,7 @@
 #define COMMON_H
 
 /* Common include files */
+#include "SWO.h"
 #include "stm32f10x.h"
 #include "stm32f10x_conf.h"
 #include "bsp_init.h"
@@ -28,7 +29,7 @@ void delay_ms(__IO uint32_t nTime);
 /* 
     Problems : rtt_printf can not accept single arugment invocation , need physical porting.
 */
-#ifdef DEBUG
+#ifdef DEBUG 
 #define rtt_printf(fmt , ...)  SEGGER_RTT_printf(0 , fmt , ##__VA_ARGS__) 
 #else
 #define rtt_printf(fmt , ...)  
