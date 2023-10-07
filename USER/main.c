@@ -196,8 +196,20 @@ adc_junction_temp_aquire(void* args __attribute((unused)))
    for(;;)
    {
    static uint16_t val = 0;
+   static uint16_t v_div = 3.3/4095;
+   static uint16_t v_25 = 1.43;
+   static uint16_t avg_slope = 0.0043;
+   static uint16_t temp = 0;
    val =  ADC_GetConversionValue(ADC1);
-      rtt_printf("JUNCTION TEMP AQUIRE: %d \n",val);
+   // Temperature (in °„C) = {(V25 - VSENSE) / Avg_Slope} + 25.
+   /* For stm32f103xC
+      V25 = 1.43
+      Avg_Slope = 0.0043
+  */
+    temp = (v_25 - val*v_div)/avg_slope + 25;
+
+
+      rtt_printf("JUNCTION TEMP AQUIRE: %d \n",temp);
          delay_ms(500);
 
   }
