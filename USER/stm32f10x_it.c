@@ -24,7 +24,6 @@
 #include "common.h"
 #include "stm32f10x_it.h"
 
-#ifndef FREERTOS_CONFIG_H 
 
 static __IO uint32_t TimingDelay;
 void TimingDelay_Decrement(void);
@@ -40,6 +39,8 @@ void TimingDelay_Decrement(void);
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
+#ifndef FREERTOS_CONFIG_H 
+
 /******************************************************************************/
 /*            Cortex-M3 Processor Exceptions Handlers                         */
 /******************************************************************************/
@@ -49,7 +50,7 @@ void TimingDelay_Decrement(void);
   * @param  None
   * @retval None
   */
-__weak void NMI_Handler(void)
+void NMI_Handler(void)
 {
 }
 
@@ -58,7 +59,7 @@ __weak void NMI_Handler(void)
   * @param  None
   * @retval None
   */
-__weak void HardFault_Handler(void)
+void HardFault_Handler(void)
 {
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
@@ -71,7 +72,7 @@ __weak void HardFault_Handler(void)
   * @param  None
   * @retval None
   */
-__weak void MemManage_Handler(void)
+void MemManage_Handler(void)
 {
   /* Go to infinite loop when Memory Manage exception occurs */
   while (1)
@@ -84,7 +85,7 @@ __weak void MemManage_Handler(void)
   * @param  None
   * @retval None
   */
-__weak void BusFault_Handler(void)
+void BusFault_Handler(void)
 {
   /* Go to infinite loop when Bus Fault exception occurs */
   while (1)
@@ -97,7 +98,7 @@ __weak void BusFault_Handler(void)
   * @param  None
   * @retval None
   */
-__weak void UsageFault_Handler(void)
+void UsageFault_Handler(void)
 {
   /* Go to infinite loop when Usage Fault exception occurs */
   while (1)
@@ -110,7 +111,7 @@ __weak void UsageFault_Handler(void)
   * @param  None
   * @retval None
   */
-__weak void SVC_Handler(void)
+void SVC_Handler(void)
 {
 }
 
@@ -119,7 +120,7 @@ __weak void SVC_Handler(void)
   * @param  None
   * @retval None
   */
-__weak void DebugMon_Handler(void)
+void DebugMon_Handler(void)
 {
 }
 
@@ -128,7 +129,7 @@ __weak void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-__weak void PendSV_Handler(void)
+void PendSV_Handler(void)
 {
 }
 
@@ -137,7 +138,7 @@ __weak void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
-__weak void SysTick_Handler(void)
+void SysTick_Handler(void)
 {
 
     #ifndef FREERTOS_CONFIG_H
@@ -145,6 +146,8 @@ __weak void SysTick_Handler(void)
     #endif
 
 }
+
+#endif
 
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
@@ -199,6 +202,5 @@ void TimingDelay_Decrement(void)
 #endif
 
 
-#endif
 
 

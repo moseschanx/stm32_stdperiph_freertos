@@ -3,7 +3,7 @@
  * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'stm32_stdPeriph_freertos' 
+ * Project: 'stm32_stdPeriph_bare' 
  * Target:  'Main' 
  */
 

@@ -8,9 +8,6 @@
 #include "bsp_init.h"
 #include "SEGGER_RTT.h"
 
-/* RTOS incudle files */
-#include "FreeRTOS.h"
-#include "task.h"
 
 /* Driver include files */
 
