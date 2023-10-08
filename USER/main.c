@@ -9,6 +9,28 @@ adc_channel_aquire_sample(void* args __attribute((unused)));
 static void
 adc_junction_temp_aquire(void* args __attribute((unused)));
 
+uint16_t user_adc_conv(ADC_TypeDef* adc ,uint8_t channel)
+{
+
+	ADC_RegularChannelConfig(adc,channel,1,ADC_SampleTime_239Cycles5);
+	ADC_SoftwareStartConvCmd(adc,ENABLE);
+	while(ADC_GetFlagStatus(adc,ADC_FLAG_EOC));
+	return ADC_GetConversionValue(ADC1);
+
+}
+
+uint16_t user_adc_get_avrg(ADC_TypeDef* adc ,uint8_t channel, uint8_t times)
+{
+  uint32_t temp = 0;
+  for(uint8_t t=0;t<times;++t)
+  {
+    temp += user_adc_conv(adc,channel);
+    delay_ms(2);
+  }
+  return temp/times;
+}
+
+
 
 int main()
 {
