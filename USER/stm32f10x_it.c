@@ -24,7 +24,6 @@
 #include "common.h"
 #include "stm32f10x_it.h"
 
-#ifndef FREERTOS_CONFIG_H 
 
 static __IO uint32_t TimingDelay;
 void TimingDelay_Decrement(void);
@@ -39,6 +38,8 @@ void TimingDelay_Decrement(void);
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
+
+#ifndef FREERTOS_CONFIG_H 
 
 /******************************************************************************/
 /*            Cortex-M3 Processor Exceptions Handlers                         */
@@ -146,6 +147,8 @@ __weak void SysTick_Handler(void)
 
 }
 
+#endif
+
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
@@ -197,8 +200,4 @@ void TimingDelay_Decrement(void)
   }
 }
 #endif
-
-
-#endif
-
 
