@@ -8,6 +8,8 @@
 #include "bsp_init.h"
 #include "SEGGER_RTT.h"
 
+/* 3rd Party Lib Support */
+#include "ftos.h"
 
 /* Driver include files */
 

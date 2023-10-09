@@ -21,6 +21,15 @@ int main()
  rtt_printf("System Initialization End.\n");
 
  SWO_PrintString("Test printing\n");
+
+
+   while(1)
+   {
+
+   rtt_printf("\n"); 
+ 
+   delay_ms(500);
+   }
 	 
 
 
