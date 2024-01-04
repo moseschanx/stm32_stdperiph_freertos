@@ -16,6 +16,16 @@
         "task.h": "c",
         "portmacro.h": "c",
         "swo.h": "c",
-        "SWO.C": "cpp"
+        "SWO.C": "cpp",
+        "apm32f10x.h": "c",
+        "apm32f10x_conf.h": "c",
+        "apm32f10x_adc.h": "c",
+        "apm32f10x_crc.h": "c",
+        "apm32f10x_can.h": "c",
+        "apm32f10x_dac.h": "c",
+        "apm32f10x_dbgmcu.h": "c",
+        "apm32f10x_misc.h": "c",
+        "ftos.h": "c",
+        "apm32f10x_it.h": "c"
     }
 }

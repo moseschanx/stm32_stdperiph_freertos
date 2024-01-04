@@ -3,8 +3,8 @@
 
 /* Common include files */
 #include "SWO.h"
-#include "stm32f10x.h"
-#include "stm32f10x_conf.h"
+#include "apm32f10x.h"
+#include "apm32f10x_conf.h"
 #include "bsp_init.h"
 #include "SEGGER_RTT.h"
 

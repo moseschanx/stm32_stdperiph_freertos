@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "C:\\Users\\moses\\Desktop\\STM32F10x_StdPeriph_Lib_V3.6.0\\Libraries\\STM32F10x_StdPeriph_Driver\\inc",
                 "C:\\Users\\moses\\Desktop\\STM32F10x_StdPeriph_Lib_V3.6.0\\Libraries\\CMSIS\\CM3\\DeviceSupport\\ST\\STM32F10x",
-                "${workspaceFolder}/FreeRTOS/**",
+                "${workspaceFolder}/APM32F10x_StdPeriph_Driver/inc",
+                "${workspaceFolder}/CMSIS/CM3/**",
                 "${workspaceFolder}/CMSIS/CM3/CoreSupport/**"
             ],
             "defines": [

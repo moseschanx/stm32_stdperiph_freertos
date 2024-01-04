@@ -2,7 +2,7 @@
 #define BSP_INIT_H
 
 
-ErrorStatus RCC_ClockConfig(void);
+ErrorStatus RCM_ClockConfig(void);
 
 void SysTick_Init(void);
 

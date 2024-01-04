@@ -1,47 +1,42 @@
 #include "common.h"
 #include "bsp_init.h"
 
-ErrorStatus RCC_ClockConfig(void)
+ErrorStatus RCM_ClockConfig(void)
 {
 	
-	   /* RCC NVIC Config */
-   NVIC_InitTypeDef NVIC_InitStructure;
-   NVIC_InitStructure.NVIC_IRQChannel = RCC_IRQn;
-   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-   NVIC_Init(&NVIC_InitStructure);
+	   /* RCM NVIC Config */
 
-   RCC_DeInit();
-   RCC_HSEConfig(RCC_HSE_ON);
+   NVIC_EnableIRQRequest(RCM_IRQn,0,0);
 
-   while(RCC_WaitForHSEStartUp()!= SUCCESS);
+   RCM_Reset();
+   RCM_ConfigHSE(RCM_HSE_OPEN);
+
+   while(RCM_WaitHSEReady()!= SUCCESS);
    
-        FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
-        /* Due to manual range specifies */
-        FLASH_SetLatency(FLASH_Latency_2);
+        FMC_EnablePrefetchBuffer();
+        FMC_ConfigLatency(FMC_LATENCY_2);
 
          /* AHB Bus Clock */
-        RCC_HCLKConfig(RCC_SYSCLK_Div1);
+         RCM_ConfigAHB(RCM_AHB_DIV_1);
         /* APB2 clock : 72Mhz */
-        RCC_PCLK2Config(RCC_HCLK_Div1);
+        RCM_ConfigAPB2(RCM_APB_DIV_1);
         /* APB1 CLock : 36Mhz */
-        RCC_PCLK1Config(RCC_HCLK_Div2);
+        RCM_ConfigAPB1(RCM_APB_DIV_2);
 
          /* HSE 8Mhz * 9 = 72Mhz */
-         RCC_PLLConfig(RCC_PLLSource_HSE_Div1,RCC_PLLMul_9);
+         RCM_ConfigPLL(RCM_PLLSEL_HSE,RCM_PLL2MF_9);
 
-         RCC_PLLCmd(ENABLE);
 
-         RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+         RCM_EnablePLL();
+         while(RCM_ReadStatusFlag(RCM_FLAG_PLLRDY) == RESET);
 
-         /* 0x08: PLL used as system clock */
-         while(RCC_GetSYSCLKSource() != 0x08);
+         RCM_ConfigSYSCLK(RCM_SYSCLK_SEL_PLL);
+
+          while(RCM_ReadSYSCLKSource() != RCM_SYSCLK_SEL_PLL);
 
     return SUCCESS;
    
 }
-
 
 
 void SysTick_Init(void)

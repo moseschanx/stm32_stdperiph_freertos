@@ -8,11 +8,13 @@ int main()
  rtt_printf("System Initialization Begin.\n ");
 
   /* RCC Config */
-  if(RCC_ClockConfig() != SUCCESS)
+  if(RCM_ClockConfig() != SUCCESS)
    {
       // Error message here.
       rtt_printf("Systemclock configuration failed.\n");
    }
+   RCM_EnableCSS(); //Clock security system
+
 
    SysTick_Init();
 
@@ -26,7 +28,7 @@ int main()
    while(1)
    {
 
-   rtt_printf("\n"); 
+   rtt_printf("Hello,APM32\n"); 
  
    delay_ms(500);
    }
