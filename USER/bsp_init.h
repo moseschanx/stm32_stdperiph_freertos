@@ -6,6 +6,7 @@ ErrorStatus RCC_ClockConfig(void);
 
 void SysTick_Init(void);
 
+void USER_ADC_Config(void);
 
 #endif
 

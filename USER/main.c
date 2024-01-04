@@ -2,6 +2,7 @@
 
 
 
+
 int main()
 {
   
@@ -31,6 +32,13 @@ int main()
    delay_ms(500);
    }
 	 
+
+
+
+}
+
+void DMA_Test(void)
+{
 
 
 
