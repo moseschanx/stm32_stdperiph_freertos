@@ -8,3 +8,4 @@ MDK/Listings/*
 MDK/Objects/*
 MDK/EventRecorderStub.scvd
 MDK/JLinkSettings.ini
+*.chw
