@@ -165,6 +165,12 @@ void SysTick_Handler(void)
 {
 }*/
 
+void ADC1_2_IRQHandler(void)
+{
+
+  rtt_printf("ADC EOC Triggered!\n");
+}
+
 /**
   * @}
   */ 

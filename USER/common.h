@@ -5,6 +5,7 @@
 #include "SWO.h"
 #include "stm32f10x.h"
 #include "stm32f10x_conf.h"
+#include "stm32f10x_it.h"
 #include "bsp_init.h"
 #include "SEGGER_RTT.h"
 
@@ -13,6 +14,9 @@
 
 /* Driver include files */
 
+
+/* Globale Variables */
+extern __IO uint16_t ADCConvertedValue[2];
 
 /* Delay function prototypes porting */
 #if defined(FREERTOS_CONFIG_H) && !defined(USE_PRIMITIVES)

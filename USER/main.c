@@ -3,6 +3,7 @@
 
 
 
+
 int main()
 {
   
@@ -10,36 +11,33 @@ int main()
 
   /* RCC Config */
   if(RCC_ClockConfig() != SUCCESS)
-   {
-      // Error message here.
-      rtt_printf("Systemclock configuration failed.\n");
-   }
+      HardFault_Handler();
+
+   RCC_PeriphClock_Init();
 
    SysTick_Init();
 
+   USER_DMA_Init();
+   
+   USER_ADC_Init();
 
 
  rtt_printf("System Initialization End.\n");
 
  SWO_PrintString("Test printing\n");
-
+ 
 
    while(1)
    {
 
-   rtt_printf("\n"); 
- 
+   rtt_printf("Junction Temp : %d\tVref Bandgap :%d\n",ADCConvertedValue[0],ADCConvertedValue[1]);
    delay_ms(500);
+ 
    }
 	 
 
-
-
 }
 
-void DMA_Test(void)
-{
 
 
 
-}
