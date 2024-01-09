@@ -16,7 +16,7 @@
 
 
 /* Globale Variables */
-extern __IO uint16_t ADCConvertedValue[2];
+extern __IO uint16_t ADCConvertedValue[8];
 
 /* Delay function prototypes porting */
 #if defined(FREERTOS_CONFIG_H) && !defined(USE_PRIMITIVES)

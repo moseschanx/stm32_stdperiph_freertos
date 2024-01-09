@@ -1,7 +1,7 @@
 #include "common.h"
 #include "bsp_init.h"
 
-__IO uint16_t ADCConvertedValue[2] = {0};
+__IO uint16_t ADCConvertedValue[8] = {0};
 
 static ADC_InitTypeDef ADC_InitStructure = {0};
 static DMA_InitTypeDef DMA_InitStructure = {0};
@@ -53,7 +53,7 @@ void RCC_PeriphClock_Init(void)
 
    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1,ENABLE);
    RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1,ENABLE);
-
+   RCC_ADCCLKConfig(RCC_PCLK2_Div6);        // ADC Clock Speed : 12Mhz
 
 }
 
@@ -69,6 +69,34 @@ void SysTick_Init(void)
 
 }
 
+void USER_GPIO_Init(void)
+{
+
+/* ADC Analog input pins */
+  GPIO_StructInit(&GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = ADC_CO_OP_BIAS_Channel | ADC_CO_OP_AMP_OUT_Channel |  \
+                                ADC_H2_OP_BIAS_Channel | ADC_H2_OP_AMP_OUT_Channel | \
+                                ADC_WINSEN_TO_VOC_Channel | ADC_SMOKE_Channel ; 
+
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOA,&GPIO_InitStructure);
+
+  /* Sensor Test pins */
+  GPIO_InitStructure.GPIO_Pin = CO_SENSOR_TEST_Pin;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(CO_SENSOR_TEST_GPIO_Port,&GPIO_InitStructure);
+  GPIO_ResetBits(CO_SENSOR_TEST_GPIO_Port,CO_SENSOR_TEST_Pin);
+
+  GPIO_InitStructure.GPIO_Pin = H2_SENSOR_TEST_Pin;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(H2_SENSOR_TEST_GPIO_Port,&GPIO_InitStructure);
+  GPIO_ResetBits(H2_SENSOR_TEST_GPIO_Port,H2_SENSOR_TEST_Pin);
+  
+  
+
+}
 
 void USER_ADC_Init(void)
 {
@@ -81,12 +109,19 @@ void USER_ADC_Init(void)
   ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
   ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
   ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
-  ADC_InitStructure.ADC_NbrOfChannel = 2;
+  ADC_InitStructure.ADC_NbrOfChannel = 8;
   ADC_Init(ADC1, &ADC_InitStructure);
 
   /* ADC1 regular channel14 configuration */ 
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 1, ADC_SampleTime_55Cycles5);
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_17, 2, ADC_SampleTime_55Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_16, 1, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_17, 2, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_CO_OP_BIAS_Channel, 3, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_CO_OP_AMP_OUT_Channel, 4, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_H2_OP_BIAS_Channel, 5, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_H2_OP_AMP_OUT_Channel, 6, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_WINSEN_TO_VOC_Channel, 7, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_SMOKE_Channel, 8, ADC_SampleTime_239Cycles5);
+
 
   ADC_ITConfig(ADC1,ADC_IT_EOC,ENABLE);
 
@@ -122,7 +157,7 @@ void USER_DMA_Init(void)
   DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
   DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&ADCConvertedValue;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
-  DMA_InitStructure.DMA_BufferSize = 2;
+  DMA_InitStructure.DMA_BufferSize = 8;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
