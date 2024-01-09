@@ -16,6 +16,7 @@
         "task.h": "c",
         "portmacro.h": "c",
         "swo.h": "c",
-        "SWO.C": "cpp"
+        "SWO.C": "c",
+        "stm32f10x_it.h": "c"
     }
 }
