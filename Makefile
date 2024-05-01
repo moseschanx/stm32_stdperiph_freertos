@@ -31,7 +31,11 @@ SEMIHOST = 0
 USE_SEGGER_RTT = 1
 #############################################################################
 
-######################  Debugger Config #####################
+######################  If enabling SGL support  ############################
+USE_SGL = 1
+#############################################################################
+
+######################  Debugger Config #####################################
 ## 0 for STLink V2 , 1 for Segger J-Link
 DEBUGGER = 0
 #############################################################################
@@ -85,6 +89,17 @@ INCLUDES = \
 			-IDRIVERS \
 			-ISYSTEM \
 			-I. \
+			
+ifeq ($(USE_SGL),1)
+	INCLUDES += -I$(SGL_DIR) \
+				-I$(SGL_DIR)/core \
+				-I$(SGL_DIR)/draw \
+				-I$(SGL_DIR)/fonts \
+				-I$(SGL_DIR)/widget \
+				-I$(SGL_DIR)/libs \
+				-I$(SGL_DIR)/libs/heap \
+				
+endif
 
 
 STD_PERIPH_LIB_SOURCES = \
@@ -99,6 +114,23 @@ SOURCES =  \
 SOURCES +=  $(wildcard ./drivers/*.c)
 
 
+######################################
+# SGL sources
+######################################
+SGL_DIR = ./sgl/source
+ifeq ($(USE_SGL),1)
+SGL_SOURCES = $(wildcard $(SGL_DIR)/*.c)  \
+			  $(wildcard $(SGL_DIR)/core/*.c)  \
+			  $(wildcard $(SGL_DIR)/draw/*.c)  \
+			  $(wildcard $(SGL_DIR)/fonts/*.c)  \
+			  $(wildcard $(SGL_DIR)/widget/*.c)  \
+
+SGL_SOURCES += $(wildcard $(SGL_DIR)/libs/*.c)
+SGL_SOURCES += $(wildcard $(SGL_DIR)/libs/heap/*.c)
+
+endif
+
+
 ifeq ($(USE_SEGGER_RTT),1)
 SOURCES +=  $(wildcard ./SEGGER_RTT/*.c)  
 endif
@@ -109,6 +141,7 @@ endif
 # Prerequisits file looking up path for GNU make
 vpath %.c $(sort $(dir $(SOURCES))) 
 vpath %.c $(sort $(dir $(STD_PERIPH_LIB_SOURCES)))
+vpath %.c $(sort $(dir $(SGL_SOURCES)))
 
 
 
@@ -182,9 +215,15 @@ ifeq ($(UNAME),Linux)
 
 endif	
 
+# 3rd-party : StdPeriph Library Object files
 STD_PERIPH_BUILD_DIR = $(BUILD_DIR)/STM32F10x_StdPeriph_Lib_V3.6.0/
 STD_PERIPH_LIB_OBJECTS = $(addprefix $(STD_PERIPH_BUILD_DIR)/,$(notdir $(STD_PERIPH_LIB_SOURCES:.c=.o)))
 
+# 3rd-party : SGL Library Object files
+SGL_BUILD_DIR = $(BUILD_DIR)/SGL/
+SGL_LIB_OBJECTS = $(addprefix $(SGL_BUILD_DIR)/,$(notdir $(SGL_SOURCES:.c=.o)))
+
+# Porject-wise Object files
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.c=.o)))
 
 
@@ -192,7 +231,7 @@ all : $(TARGET).elf
 
 
 # Linking Object Files
-$(TARGET).elf: $(STD_PERIPH_LIB_OBJECTS) $(OBJECTS)   
+$(TARGET).elf: $(STD_PERIPH_LIB_OBJECTS) $(OBJECTS) $(SGL_LIB_OBJECTS)  
 	@$(ECHO) "LD $@"
 	@$(CC) $^ $(LDFLAGS) -o $@ 
 	@$(ECHO) "SIZE $@"
@@ -210,6 +249,13 @@ $(TARGET).elf: $(STD_PERIPH_LIB_OBJECTS) $(OBJECTS)
 # Building the StdPeriph Library Object files.
 $(STD_PERIPH_BUILD_DIR)/%.o: %.c
 	@mkdir -p $(STD_PERIPH_BUILD_DIR)
+	@$(ECHO) "CC $<"
+	@$(CC) -c $(CCFLAGS) \
+		 $< -o $@
+
+# Building the SGL Library Object files.
+$(SGL_BUILD_DIR)/%.o: %.c
+	@mkdir -p $(SGL_BUILD_DIR)
 	@$(ECHO) "CC $<"
 	@$(CC) -c $(CCFLAGS) \
 		 $< -o $@
@@ -240,6 +286,12 @@ clean :
 	@$(call COL,$(GREEN),Cleaning output files)
 	@$(RM)  *.o *.s *_debug *_disa *_bin *_layout *.elf *.map *.swp *.log 
 	@$(RM) $(BUILD_DIR)/*.o $(BUILD_DIR)/*.map
+	@$(call COL,$(LIGHT_GREEN),Finished.)
+
+# Only clean sgl build output files.
+clean-sgl :
+	@$(call COL,$(GREEN),Cleaning sgl build files)
+	@$(RM) -r $(SGL_BUILD_DIR)/*
 	@$(call COL,$(LIGHT_GREEN),Finished.)
 
 
