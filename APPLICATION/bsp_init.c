@@ -99,33 +99,33 @@ void USER_GPIO_Init(void)
   GPIO_Init(H2_SENSOR_TEST_GPIO_Port,&GPIO_InitStructure);
   GPIO_ResetBits(H2_SENSOR_TEST_GPIO_Port,H2_SENSOR_TEST_Pin);
 
-  /* USART1 Pins */
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9; // USART1 Tx pin
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA,&GPIO_InitStructure);
-  GPIO_ResetBits(GPIOA,GPIO_Pin_9);
+  // /* USART1 Pins */
+  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9; // USART1 Tx pin
+  // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  // GPIO_Init(GPIOA,&GPIO_InitStructure);
+  // GPIO_ResetBits(GPIOA,GPIO_Pin_9);
 
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; // USART1 Rx pin
-  GPIO_Init(GPIOA,&GPIO_InitStructure);
-  GPIO_ResetBits(GPIOA,GPIO_Pin_10);
+  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; // USART1 Rx pin
+  // GPIO_Init(GPIOA,&GPIO_InitStructure);
+  // GPIO_ResetBits(GPIOA,GPIO_Pin_10);
 
-  //GPIO_PinRemapConfig(GPIO_Remap_USART1,ENABLE);
+  // //GPIO_PinRemapConfig(GPIO_Remap_USART1,ENABLE);
 
-  /* USART2 Pins */
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2; // USART2 Tx pin
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(GPIOA,&GPIO_InitStructure);
-  GPIO_ResetBits(GPIOA,GPIO_Pin_9);
+  // /* USART2 Pins */
+  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2; // USART2 Tx pin
+  // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  // GPIO_Init(GPIOA,&GPIO_InitStructure);
+  // GPIO_ResetBits(GPIOA,GPIO_Pin_9);
 
 
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3; // USART2 Rx pin
-  GPIO_Init(GPIOA,&GPIO_InitStructure);
-  GPIO_ResetBits(GPIOA,GPIO_Pin_10);
-  GPIO_PinRemapConfig(GPIO_Remap_USART2,ENABLE);
+  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3; // USART2 Rx pin
+  // GPIO_Init(GPIOA,&GPIO_InitStructure);
+  // GPIO_ResetBits(GPIOA,GPIO_Pin_10);
+  // GPIO_PinRemapConfig(GPIO_Remap_USART2,ENABLE);
 
 
 
