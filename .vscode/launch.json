@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "GBD Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "./bare_test.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+
+            "armToolchainPath": "C:\\Program Files (x86)\\GNU Arm Embedded Toolchain\\10 2021.10\\bin\\",
+            "device" : "stm32f10x",
+            "svdFile" : "${workspaceRoot}\\device\\STM32F103xx.svd",
+//            "svdFile" : "${workspaceRoot}\\device\\ARMCM3.svd",   //For cm3 core peripherals
+
+            "servertype": "openocd",
+            "searchDir": ["C:\\program files (x86)\\gnu arm embedded toolchain\\xpack-openocd-0.12.0-2\\openocd\\scripts\\target\\",
+                           "C:\\program files (x86)\\gnu arm embedded toolchain\\xpack-openocd-0.12.0-2\\openocd\\scripts\\interface\\",
+                           "${workspaceRoot}\\device"],
+            "configFiles": ["stlink.cfg","stm32f1x.cfg"],
+//            "configFiles": ["jlink.cfg","stm32f103RC.cfg"],
+            "rttConfig": {
+                "enabled": true,
+                "decoders": [
+                    {
+                        "label": "rtt_hello",
+                        "port": 0,
+                        "type": "console"
+                    }
+                ]
+            }
+
+
+            
+        }
+    ]
+}

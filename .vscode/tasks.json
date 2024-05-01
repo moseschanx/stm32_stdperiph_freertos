@@ -1,0 +1,67 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build",
+			"type": "shell",
+			"command": "make all",
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "rebuild",
+			"type": "shell",
+			"command": "make all",
+			"dependsOn": [
+				"clean"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "clean",
+			"type": "shell",
+			"command": "make clean",
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "clean all",
+			"type": "shell",
+			"command": "make clean_all",
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "download",
+			"type": "shell",
+			"command": "make flash",
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
+			"label": "build&run",
+			"type": "shell",
+			"command": "make flash",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+//				"clean",
+				"build"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		}
+	]
+}

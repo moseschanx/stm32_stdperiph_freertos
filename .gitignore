@@ -1,11 +1,7 @@
-*.uvguix
-JLinkLog.txt
-
+APPLICATION/*~
 *~
-*swp
-MDK/DebugConfig/*
-MDK/Listings/*
-MDK/Objects/*
-MDK/EventRecorderStub.scvd
-MDK/JLinkSettings.ini
-*.chw
+
+build/*
+
+*.elf
+*tags

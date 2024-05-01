@@ -1,0 +1,360 @@
+## For Windows users :
+## 1. Install Cygwin environment then add to you system PATH.
+## Necessary Cygwin packages : 
+##					make , ctags 
+## 2. Install GNU arm-none-eabi toolchain, add it to your system PATH.
+
+###################### Project Final Executable Name ########################
+TARGET := bare_test
+#############################################################################
+
+BUILD_DIR := build
+
+###################### MS-Dos Style ToolChain PATH ##########################
+TOOLCHAIN_PATH = "C:\Program Files (x86)\GNU Arm Embedded Toolchain\10 2021.10"
+#############################################################################
+
+######################     ToolChain Version       ##########################
+## '' braces are Cygwin environment mandatory 
+TOOLCHAIN_VER = '10 2021.10'
+#############################################################################
+
+###################### Standard Peripheral Library path #####################
+STD_PERIPH_DIR = ./STM32F10x_StdPeriph_Lib_V3.6.0
+#############################################################################
+
+###################### If enabling semihosting features #####################
+SEMIHOST = 0
+#############################################################################
+
+######################  If enabling segger-rtt support  #####################
+USE_SEGGER_RTT = 1
+#############################################################################
+
+######################  Debugger Config #####################
+## 0 for STLink V2 , 1 for Segger J-Link
+DEBUGGER = 0
+#############################################################################
+
+###################### Project-wise Macro Definitions #######################
+MACROS = -D 'assert_param(expr)=((void)0)' \
+		 -D STM32F10X_HD \
+		 -D DBG_LEVEL=0 \
+		 -D DEBUG \
+		 -D USE_STDPERIPH_DRIVER 
+
+ifeq ($(USE_SEGGER_RTT),1)
+MACROS += -D USE_SEGGER_RTT
+endif
+
+#############################################################################
+
+# -S for .s , -h for mem layout , -d for disassembly , -s for binary -L for Library Search Path
+CCFLAGS = -march=armv7-m -mthumb -Wall -Os -std=gnu11 -g $(INCLUDES) $(MACROS)
+LDFLAGS = $(LIB_PATH) -Tstm32f103xx.ld  
+#LDFLAGS += -nostdlib
+LDFLAGS += -lm
+
+# Creating the map file
+# -Wl : pass the following argument to the linker
+LDFLAGS += -Wl,-Map=$(BUILD_DIR)/$(TARGET).map
+
+# Optmization for ELF size heavily
+# --gc-sections : garbage collect unused sections
+LDFLAGS += -Wl,--gc-sections
+# -ffunction-sections : place each function in its own section
+# -fdata-sections : place each data object in its own section
+CCFLAGS += -ffunction-sections -fdata-sections
+
+
+
+ifeq ($(SEMIHOST),1)
+CCFLAGS += --specs=rdimon.specs
+LDFLAGS := $(filter-out -nostdlib,$(LDFLAGS))
+LDFLAGS += -lc -lrdimon
+LIB_PATH += -L"$(subst ",,$(TOOLCHAIN_PATH))\lib" # This generates MS-DOS Like Path names
+endif
+
+
+INCLUDES = \
+			-I$(STD_PERIPH_DIR)/Libraries/CMSIS/CM3/CoreSupport \
+			-I$(STD_PERIPH_DIR)/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x \
+			-I$(STD_PERIPH_DIR)/Libraries/STM32F10x_StdPeriph_Driver/inc \
+			-ISEGGER_RTT \
+			-IAPPLICATION \
+			-IDRIVERS \
+			-ISYSTEM \
+			-I. \
+
+
+STD_PERIPH_LIB_SOURCES = \
+			$(wildcard $(STD_PERIPH_DIR)/Libraries/STM32F10x_StdPeriph_Driver/src/*.c)  
+
+SOURCES =  \
+            $(wildcard ./*.c)  \
+            $(wildcard ./system/*.c)  \
+            $(wildcard ./3rd-party/*.c)  \
+            $(wildcard ./application/*.c)  \
+			
+SOURCES +=  $(wildcard ./drivers/*.c)
+
+
+ifeq ($(USE_SEGGER_RTT),1)
+SOURCES +=  $(wildcard ./SEGGER_RTT/*.c)  
+endif
+
+
+
+
+# Prerequisits file looking up path for GNU make
+vpath %.c $(sort $(dir $(SOURCES))) 
+vpath %.c $(sort $(dir $(STD_PERIPH_LIB_SOURCES)))
+
+
+
+### Toolchain Settings ###
+
+PREFIX = $(CYGWIN_TOOLCHAIN_PREFIX)/$(TOOLCHAIN_VER)/bin/arm-none-eabi-
+CC = $(PREFIX)gcc
+LD = $(PREFIX)ld
+AS = $(PREFIX)gcc -x assembler-with-cpp
+CP = $(PREFIX)objcopy
+AR = $(PREFIX)ar
+SZ = $(PREFIX)size
+OD = $(PREFIX)objdump
+GDB = $(PREFIX)gdb
+HEX =$(CP) -O ihex
+BIN =$(CP) -O binary -S
+STRIP =$(PREFIX)strip	# Omit all symbol information from the ouput file
+
+
+
+### OS dependence Variables Settings ###
+
+ifeq ($(OS),Windows_NT) 
+# For MS-Dos platform.
+$(info Windows environment detected. os:$(OS))
+
+ifneq ("",$(findstring /bin/sh,$(SHELL)))
+$(info Cygwin  environment detected. shell:$(SHELL))
+	RM = rm -f
+	USE_CYGWIN = 1
+	START = sh -c
+else 
+$(error Cygwin not found, abort. shell:$(SHELL))
+	RM = del /Q /S
+endif
+
+endif
+
+UNAME = $(shell uname -s)
+ifeq ($(UNAME),Darwin)
+# For Darwin platform.
+		RM = rm -rvf
+
+		DIR_PREFIX = /Users/moses/Downloads
+		OPENOCD_PREFIX = $(DIR_PREFIX)/xpack-openocd-0.11.?-?
+		GNU_PREFIX = $(DIR_PREFIX)/gcc-arm-none-eabi-10.?-202?.??/bin
+
+		CC := $(GNU_PREFIX)/arm-none-eabi-gcc
+		OBJDUMP := $(GNU_PREFIX)/arm-none-eabi-objdump
+
+
+		MSG_SUPRESS = > ./server.log 2>&1 
+		GDB_CMD = $(GNU_PREFIX)/arm-none-eabi-gdb-py
+		OPENOCD = $(OPENOCD_PREFIX)/bin/openocd
+		STLINK_CFG = $(OPENOCD_PREFIX)/scripts/interface/stlink.cfg
+		CHIP_CFG = $(OPENOCD_PREFIX)/scripts/target/stm32f1x.cfg 
+
+		STD_PERIPH_DIR := $(shell ls -d $(DIR_PREFIX)/STM32F10x_StdPeriph_Lib_V3.6.?)
+endif
+ifeq ($(UNAME),Linux)
+# For Linux platform.
+		RM = rm -rvf
+
+		MSG_SUPRESS = > ./server.log 2>&1 
+		GDB_CMD = arm-none-eabi-gdb-py
+		OPENOCD = openocd
+		STLINK_CFG = /usr/local/share/openocd/scripts/interface/stlink.cfg
+		CHIP_CFG = /usr/local/share/openocd/scripts/target/stm32f1x.cfg 
+	
+		STD_PERIPH_DIR = /home/moses/code/STM32F10x_StdPeriph_Lib_V3.6.0 
+
+endif	
+
+STD_PERIPH_BUILD_DIR = $(BUILD_DIR)/STM32F10x_StdPeriph_Lib_V3.6.0/
+STD_PERIPH_LIB_OBJECTS = $(addprefix $(STD_PERIPH_BUILD_DIR)/,$(notdir $(STD_PERIPH_LIB_SOURCES:.c=.o)))
+
+OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.c=.o)))
+
+
+all : $(TARGET).elf 
+
+
+# Linking Object Files
+$(TARGET).elf: $(STD_PERIPH_LIB_OBJECTS) $(OBJECTS)   
+	@$(ECHO) "LD $@"
+	@$(CC) $^ $(LDFLAGS) -o $@ 
+	@$(ECHO) "SIZE $@"
+	@$(SZ)  $@
+#	@$(STRIP) $@
+
+
+# Building the Project Library Object files.
+ $(BUILD_DIR)/%.o: %.c
+	@mkdir -p $(BUILD_DIR)
+	@$(ECHO) "CC $<"
+	@$(CC) -c $(CCFLAGS) \
+		 $< -o $@
+
+# Building the StdPeriph Library Object files.
+$(STD_PERIPH_BUILD_DIR)/%.o: %.c
+	@mkdir -p $(STD_PERIPH_BUILD_DIR)
+	@$(ECHO) "CC $<"
+	@$(CC) -c $(CCFLAGS) \
+		 $< -o $@
+
+
+strip : $(TARGET).elf
+	@$(call COL,$(YELLOW), STRIP $<)
+	@$(STRIP) $<
+
+strip_size : $(TARGET).elf strip
+	@$(call COL,$(YELLOW), SIZE $<)
+	@$(SZ) $<
+
+size : $(TARGET).elf 
+	@$(call COL,$(YELLOW), SIZE $<)
+	@$(SZ) $<
+
+
+# Updating ctags for the project.
+tags : clean_tags
+	@$(call COL,$(GREEN),Generating new tags ...)
+	@ctags -R -a ./*
+	@$(call COL,$(LIGHT_GREEN),Finished.)
+
+
+# Only clean project related files, keep sub-folders/3-rdparty lib content.
+clean :
+	@$(call COL,$(GREEN),Cleaning output files)
+	@$(RM)  *.o *.s *_debug *_disa *_bin *_layout *.elf *.map *.swp *.log 
+	@$(RM) $(BUILD_DIR)/*.o $(BUILD_DIR)/*.map
+	@$(call COL,$(LIGHT_GREEN),Finished.)
+
+
+clean_tags : 
+	@$(call COL,$(GREEN),Cleaning generated tags)
+	@$(RM) tags
+
+clean_all : 
+	@$(call COL,$(GREEN),Cleaning all build files)
+	@$(RM) -r $(BUILD_DIR)
+	@$(call COL,$(LIGHT_GREEN),Finished.)
+
+
+ECHO := echo -e
+
+# function COL : Generating color formatted output.
+#Usage :	@$(call COL,$(color),output messages)
+define COL
+	$(eval $@_COLOR_START = $(1))
+	$(eval $@_CONTENT = $(2))
+	$(eval $@_COLOR_END = $(NC))
+	$(ECHO) ${$@_COLOR_START}${$@_CONTENT}${$@_COLOR_END}
+endef
+	
+
+# Ouput color tables 
+BLACK  :=  '\033[0;30m'
+RED    :=  '\033[0;31m'
+GREEN  :=  '\033[0;32m'
+BROWN  :=  '\033[0;33m'
+BLUE   :=  '\033[0;34m'
+PURPLE :=  '\033[0;35m'
+CYAN   :=  '\033[0;36m'
+
+LIGHT_GRAY     :=  '\033[0;37m'
+DARK_GRAY      :=  '\033[1;30m'
+LIGHT_RED      :=  '\033[1;31m'
+LIGHT_GREEN    :=  '\033[1;32m'
+YELLOW		   :=  '\033[1;33m'
+LIGHT_BLUE     :=  '\033[1;34m'
+LIGHT_PURPLE   :=  '\033[1;35m'
+LIGHT_CYAN     :=  '\033[1;36m'
+WHITE		   :=  '\033[1;37m'
+
+NC     :=  '\033[0m'
+
+ 
+##############################################################################################################
+########################   OPENOCD SERVER AND GDB DEBUGGING COMMAND WRAPPERS  ################################
+##############################################################################################################
+########################   OpenOCD Cygwin file PATH Configurations            ################################
+ifeq ($(USE_CYGWIN), 1)
+CYGWIN_TOOLCHAIN_PREFIX = /cygdrive/c/'Program Files (x86)'/'GNU Arm Embedded Toolchain'
+OPENOCD_PREFIX = $(CYGWIN_TOOLCHAIN_PREFIX)/xpack-openocd-0.12.0-2/
+OPENOCD = $(OPENOCD_PREFIX)/bin/openocd.exe
+#CHIP_CFG = "C:\Program Files (x86)\GNU Arm Embedded Toolchain\xpack-openocd-0.12.0-2\openocd\scripts\target\stm32f1x.cfg"
+CHIP_CFG = ".\device\stm32f103RC.cfg"		## Project-wise modified alternative.
+ifeq ($(DEBUGGER),0)
+DEBUGGER_CFG = "C:\Program Files (x86)\GNU Arm Embedded Toolchain\xpack-openocd-0.12.0-2\openocd\scripts\interface\stlink.cfg"
+else 
+DEBUGGER_CFG = "C:\Program Files (x86)\GNU Arm Embedded Toolchain\xpack-openocd-0.12.0-2\openocd\scripts\interface\jlink.cfg"
+endif
+endif
+
+
+# test : 
+# 	$(info Current DEBUGGER is $(DEBUGGER))
+# 	$(info Current DEBUGGER_CFG is $(DEBUGGER_CFG))
+
+OPENOCD_DEBUG_CMDS = 
+OPENOCD_DEBUG_CMDS += -c "reset halt"
+OPENOCD_DEBUG_CMDS += -c "flash write_image erase $(TARGET).elf"
+#OPENOCD_DEBUG_CMDS += -c "program $(TARGET).elf verify reset exit"
+OPENOCD_DEBUG_CMDS += -c "reset"
+
+OPENOCD_DEBUG_CMDS += -c "shutdown"
+
+
+loadserver :
+	$(OPENOCD) -f  $(DEBUGGER_CFG) \
+	       	-f  $(CHIP_CFG) &
+#			 $(MSG_SUPRESS) &
+
+monitor :
+	$(START) $(OPENOCD) -f  $(DEBUGGER_CFG) \
+	       	-f  $(CHIP_CFG) 
+	
+	$(START) $(GDB_CMD) \
+		-ex "target remote localhost:3333" \
+		-ex "monitor arm semihosting enable" \
+		-ex "detach" \
+		-ex "quit"    \
+		$(MSG_SUPRESS) &
+
+run : $(TARGET).elf
+	@$(call COL,$(GREEN),Running $<)
+	@$(OPENOCD) -f $(DEBUGGER_CFG) -f $(CHIP_CFG) -c init -c "reset" -c "shutdown"
+
+flash :
+	$(OPENOCD) -f  $(DEBUGGER_CFG) \
+	       	-f  $(CHIP_CFG) \
+			-c init $(OPENOCD_DEBUG_CMDS)
+
+gdbflash : loadserver
+	$(START) $(GDB_CMD) \
+		-ex "target remote localhost:3333" \
+		-ex "monitor reset halt" \
+		-ex "monitor flash write_image erase ./final.elf" \
+		-ex "detach" \
+		-ex "quit"
+
+gdbdbg : 
+	 $(GDB) \
+		-ex "file ./$(TARGET).elf" \
+		-ex "target remote localhost:3333" \
+		-ex "monitor reset halt" \
+		-ex "source ./svd_tool/gdb-svd.py" \
+		-ex "svd ./svd_tool/STM32F103xx.svd" \
