@@ -19,7 +19,7 @@
 //#include "sys.h"
 //#include "lcd.h"
 //#include "touch.h"
-//#include "gui.h"
+#include "gui.h"
 
 
 /* Globale Variables */
