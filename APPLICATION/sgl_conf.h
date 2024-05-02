@@ -41,10 +41,10 @@ typedef unsigned int size_t;
 
 
 //显示屏面板的像素颜色深度，默认为32bit
-#define SGL_CONFIG_PANEL_PIXEL_DEPTH          32
+#define SGL_CONFIG_PANEL_PIXEL_DEPTH          16
 
 //FrameBuffer是否是内存映射方式
-#define SGL_CONFIG_FRAMEBUFFER_MMAP           1
+#define SGL_CONFIG_FRAMEBUFFER_MMAP           0
 
 //默认page背景颜色
 #define SGL_CONFIG_PAGE_COLOR                 SGL_WHITE
@@ -65,7 +65,7 @@ typedef unsigned int size_t;
 //6: libc
 #define SGL_CONFIG_HEAP_POLICY                5
 //定义内存池的大小，单位KByte
-#define SGL_CONFIG_HEAP_POOL_SIZE             64
+#define SGL_CONFIG_HEAP_POOL_SIZE             32
 
 
 //定义事件的队列深度
