@@ -45,7 +45,8 @@ MACROS = -D 'assert_param(expr)=((void)0)' \
 		 -D STM32F10X_HD \
 		 -D DBG_LEVEL=0 \
 		 -D DEBUG \
-		 -D USE_STDPERIPH_DRIVER 
+		 -D USE_STDPERIPH_DRIVER \
+		 -D NDEBUG
 
 ifeq ($(USE_SEGGER_RTT),1)
 MACROS += -D USE_SEGGER_RTT
@@ -53,17 +54,24 @@ endif
 
 #############################################################################
 
-# -S for .s , -h for mem layout , -d for disassembly , -s for binary -L for Library Search Path
+# -march=armv7-m : ARM Cortex-M3 architecture
+# -mthumb : generate thumb instructions
+# -Wall : enable all warnings
+# -Os : optimize for size
+# -std=gnu11 : use GNU C11 standard
+# -g : generate debugging information
 CCFLAGS = -march=armv7-m -mthumb -Wall -Os -std=gnu11 -g $(INCLUDES) $(MACROS)
 LDFLAGS = $(LIB_PATH) -Tstm32f103xx.ld  
-#LDFLAGS += -nostdlib
-LDFLAGS += -lm
+LDFLAGS += -nostdlib
+LDFLAGS += -specs=nosys.specs
+#LDFLAGS += -lm
+#LIB_PATH += -L$(CYGWIN_TOOLCHAIN_PREFIX)/$(TOOLCHAIN_VER)/arm-none-eabi/lib/
 
 # Creating the map file
 # -Wl : pass the following argument to the linker
 LDFLAGS += -Wl,-Map=$(BUILD_DIR)/$(TARGET).map
 
-# Optmization for ELF size heavily
+### Optmization for ELF size heavily
 # --gc-sections : garbage collect unused sections
 LDFLAGS += -Wl,--gc-sections
 # -ffunction-sections : place each function in its own section
@@ -71,12 +79,11 @@ LDFLAGS += -Wl,--gc-sections
 CCFLAGS += -ffunction-sections -fdata-sections
 
 
-
 ifeq ($(SEMIHOST),1)
 CCFLAGS += --specs=rdimon.specs
 LDFLAGS := $(filter-out -nostdlib,$(LDFLAGS))
 LDFLAGS += -lc -lrdimon
-LIB_PATH += -L"$(subst ",,$(TOOLCHAIN_PATH))\lib" # This generates MS-DOS Like Path names
+LIB_PATH += -L$(CYGWIN_TOOLCHAIN_PREFIX)/$(TOOLCHAIN_VER)/arm-none-eabi/lib/
 endif
 
 
@@ -136,13 +143,10 @@ SOURCES +=  $(wildcard ./SEGGER_RTT/*.c)
 endif
 
 
-
-
 # Prerequisits file looking up path for GNU make
 vpath %.c $(sort $(dir $(SOURCES))) 
 vpath %.c $(sort $(dir $(STD_PERIPH_LIB_SOURCES)))
 vpath %.c $(sort $(dir $(SGL_SOURCES)))
-
 
 
 ### Toolchain Settings ###
@@ -159,7 +163,6 @@ GDB = $(PREFIX)gdb
 HEX =$(CP) -O ihex
 BIN =$(CP) -O binary -S
 STRIP =$(PREFIX)strip	# Omit all symbol information from the ouput file
-
 
 
 ### OS dependence Variables Settings ###
@@ -289,8 +292,8 @@ clean :
 	@$(call COL,$(LIGHT_GREEN),Finished.)
 
 # Only clean sgl build output files.
-clean-sgl :
-	@$(call COL,$(GREEN),Cleaning sgl build files)
+clean_sgl :
+	@$(call COL,$(GREEN),Cleaning SGL build files)
 	@$(RM) -r $(SGL_BUILD_DIR)/*
 	@$(call COL,$(LIGHT_GREEN),Finished.)
 
@@ -316,7 +319,6 @@ define COL
 	$(ECHO) ${$@_COLOR_START}${$@_CONTENT}${$@_COLOR_END}
 endef
 	
-
 # Ouput color tables 
 BLACK  :=  '\033[0;30m'
 RED    :=  '\033[0;31m'
