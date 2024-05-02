@@ -9,7 +9,14 @@
         "bsp_init.h": "c",
         "stdio.h": "c",
         "sgl_conf.h": "c",
-        "sgl_types.h": "c"
+        "sgl_types.h": "c",
+        "test.h": "c",
+        "sgl.h": "c",
+        "sgl_button.h": "c",
+        "sgl_core.h": "c",
+        "stdlib.h": "c",
+        "lcd.h": "c",
+        "sys.h": "c"
     },
-    "cortex-debug.variableUseNaturalFormat": true
+    "cortex-debug.variableUseNaturalFormat": false
 }
