@@ -8,7 +8,7 @@ A Baremetal STM32 programing environment based on [**ARM GNU Embedded Tool Chain
 - GNU language extension support.
 
 ## Test Platform 
-Current only tested on **Windows 10 x64** With **Cygwin** Environment.
+Currently only tested on **Windows 10 x64** With **Cygwin** Environment.
 
 ## Supported Device
 Currently tested on **STM32F103RC/E** : `254KiB` / `512KiB` flash size respectively, and `64KiB` SRAM size. 
@@ -50,4 +50,4 @@ Currently tested on **STM32F103RC/E** : `254KiB` / `512KiB` flash size respectiv
   - Press `F5` to start debugging.
 
 ### TO DOs :
-  - Integrate the `SGL` library for the build.
+  - Fix SGL Running into HardFault Problem.
