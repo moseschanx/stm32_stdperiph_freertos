@@ -23,6 +23,18 @@
 			}
 		},
 		{
+			"label": "rebuild all",
+			"type": "shell",
+			"command": "make all",
+			"dependsOn": [
+				"clean all"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
 			"label": "clean",
 			"type": "shell",
 			"command": "make clean",
