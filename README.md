@@ -49,5 +49,11 @@ Currently tested on **STM32F103RC/E** : `254KiB` / `512KiB` flash size respectiv
   - Press `Ctrl+Shift+B` in vscode then select the `build&run` task.
   - Press `F5` to start debugging.
 
+
+### To Initialize git repository and Apply SGL Build patch :
+  - `git submodule update --init --recursive`
+  - `cd sgl`
+  - `git apply ..\sgl-moses_build.patch`
+
 ### TO DOs :
   - Fix SGL Running into HardFault Problem.
