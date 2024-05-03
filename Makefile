@@ -191,6 +191,7 @@ ifeq ($(UNAME),Darwin)
 		ECHO := echo
 
 		DIR_PREFIX = /Users/moses/Downloads
+		STD_PERIPH_DIR := $(shell ls -d $(DIR_PREFIX)/STM32F10x_StdPeriph_Lib_V3.6.?)
 		OPENOCD_PREFIX = $(DIR_PREFIX)/xpack-openocd-0.11.?-?
 		GNU_PREFIX = $(DIR_PREFIX)/gcc-arm-none-eabi-10.?-202?.??/bin
 
@@ -205,7 +206,12 @@ ifeq ($(UNAME),Darwin)
 		STLINK_CFG = $(OPENOCD_PREFIX)/scripts/interface/stlink.cfg
 		CHIP_CFG = $(OPENOCD_PREFIX)/scripts/target/stm32f1x.cfg 
 
-		STD_PERIPH_DIR := $(shell ls -d $(DIR_PREFIX)/STM32F10x_StdPeriph_Lib_V3.6.?)
+		ifeq ($(DEBUGGER),0)
+		DEBUGGER_CFG = $(OPENOCD_PREFIX)/scripts/interface/stlink.cfg
+		else 
+		DEBUGGER_CFG = $(OPENOCD_PREFIX)/scripts/interface/jlink.cfg
+		endif
+
 endif
 ifeq ($(UNAME),Linux)
 # For Linux platform.
