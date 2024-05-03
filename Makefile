@@ -176,6 +176,7 @@ $(info Cygwin  environment detected. shell:$(SHELL))
 	RM = rm -f
 	USE_CYGWIN = 1
 	START = sh -c
+	ECHO := echo -e
 else 
 $(error Cygwin not found, abort. shell:$(SHELL))
 	RM = del /Q /S
@@ -186,7 +187,8 @@ endif
 UNAME = $(shell uname -s)
 ifeq ($(UNAME),Darwin)
 # For Darwin platform.
-		RM = rm -rvf
+		RM = rm -rf
+		ECHO := echo
 
 		DIR_PREFIX = /Users/moses/Downloads
 		OPENOCD_PREFIX = $(DIR_PREFIX)/xpack-openocd-0.11.?-?
@@ -194,6 +196,7 @@ ifeq ($(UNAME),Darwin)
 
 		CC := $(GNU_PREFIX)/arm-none-eabi-gcc
 		OBJDUMP := $(GNU_PREFIX)/arm-none-eabi-objdump
+		SZ = $(GNU_PREFIX)/arm-none-eabi-size
 
 
 		MSG_SUPRESS = > ./server.log 2>&1 
@@ -308,7 +311,6 @@ clean_all :
 	@$(call COL,$(LIGHT_GREEN),Finished.)
 
 
-ECHO := echo -e
 
 # function COL : Generating color formatted output.
 #Usage :	@$(call COL,$(color),output messages)
@@ -316,27 +318,27 @@ define COL
 	$(eval $@_COLOR_START = $(1))
 	$(eval $@_CONTENT = $(2))
 	$(eval $@_COLOR_END = $(NC))
-	$(ECHO) ${$@_COLOR_START}${$@_CONTENT}${$@_COLOR_END}
+	$(ECHO) "${$@_COLOR_START}${$@_CONTENT}"${$@_COLOR_END}
 endef
 	
 # Ouput color tables 
-BLACK  :=  '\033[0;30m'
-RED    :=  '\033[0;31m'
-GREEN  :=  '\033[0;32m'
-BROWN  :=  '\033[0;33m'
-BLUE   :=  '\033[0;34m'
-PURPLE :=  '\033[0;35m'
-CYAN   :=  '\033[0;36m'
+BLACK  :=  \033[0;30m
+RED    :=  \033[0;31m
+GREEN  :=  \033[0;32m
+BROWN  :=  \033[0;33m
+BLUE   :=  \033[0;34m
+PURPLE :=  \033[0;35m
+CYAN   :=  \033[0;36m
 
-LIGHT_GRAY     :=  '\033[0;37m'
-DARK_GRAY      :=  '\033[1;30m'
-LIGHT_RED      :=  '\033[1;31m'
-LIGHT_GREEN    :=  '\033[1;32m'
-YELLOW		   :=  '\033[1;33m'
-LIGHT_BLUE     :=  '\033[1;34m'
-LIGHT_PURPLE   :=  '\033[1;35m'
-LIGHT_CYAN     :=  '\033[1;36m'
-WHITE		   :=  '\033[1;37m'
+LIGHT_GRAY     :=  \033[0;37m
+DARK_GRAY      :=  \033[1;30m
+LIGHT_RED      :=  \033[1;31m
+LIGHT_GREEN    :=  \033[1;32m
+YELLOW		   :=  \033[1;33m
+LIGHT_BLUE     :=  \033[1;34m
+LIGHT_PURPLE   :=  \033[1;35m
+LIGHT_CYAN     :=  \033[1;36m
+WHITE		   :=  \033[1;37m
 
 NC     :=  '\033[0m'
 
