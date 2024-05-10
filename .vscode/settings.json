@@ -16,7 +16,10 @@
         "sgl_core.h": "c",
         "stdlib.h": "c",
         "lcd.h": "c",
-        "sys.h": "c"
+        "sys.h": "c",
+        "myiic.h": "c",
+        "stm32f10x_rcc.h": "c",
+        "stm32f10x.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }
