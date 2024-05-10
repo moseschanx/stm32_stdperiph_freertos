@@ -37,7 +37,7 @@ USE_SGL = 1
 
 ######################  Debugger Config #####################################
 ## 0 for STLink V2 , 1 for Segger J-Link
-DEBUGGER = 0
+DEBUGGER = 1
 #############################################################################
 
 ###################### Project-wise Macro Definitions #######################
@@ -54,17 +54,19 @@ endif
 
 #############################################################################
 
+ARCH_CFG = -march=armv7-m -mthumb
+
 # -march=armv7-m : ARM Cortex-M3 architecture
 # -mthumb : generate thumb instructions
 # -Wall : enable all warnings
 # -Os : optimize for size
 # -std=gnu11 : use GNU C11 standard
 # -g : generate debugging information
-CCFLAGS = -march=armv7-m -mthumb -Wall -Os -std=gnu11 -g $(INCLUDES) $(MACROS)
+CCFLAGS = $(ARCH_CFG) -Wall -Og -std=c99 -g $(INCLUDES) $(MACROS)
 LDFLAGS = $(LIB_PATH) -Tstm32f103xx.ld  
-LDFLAGS += -nostdlib
+#LDFLAGS += -nostdlib
 LDFLAGS += -specs=nosys.specs
-#LDFLAGS += -lm
+LDFLAGS += -lm -lnosys
 #LIB_PATH += -L$(CYGWIN_TOOLCHAIN_PREFIX)/$(TOOLCHAIN_VER)/arm-none-eabi/lib/
 
 # Creating the map file
@@ -77,6 +79,11 @@ LDFLAGS += -Wl,--gc-sections
 # -ffunction-sections : place each function in its own section
 # -fdata-sections : place each data object in its own section
 CCFLAGS += -ffunction-sections -fdata-sections
+
+### Suppresing compiler warnings ###
+CCFLAGS += -Wno-strict-aliasing
+CCFLAGS += -Wno-maybe-uninitialized
+
 
 
 ifeq ($(SEMIHOST),1)
@@ -113,6 +120,7 @@ STD_PERIPH_LIB_SOURCES = \
 			$(wildcard $(STD_PERIPH_DIR)/Libraries/STM32F10x_StdPeriph_Driver/src/*.c)  
 
 SOURCES =  \
+			$(wildcard $(STD_PERIPH_DIR)/Libraries/CMSIS/CM3/CoreSupport/core_cm3.c) \
             $(wildcard ./*.c)  \
             $(wildcard ./system/*.c)  \
             $(wildcard ./3rd-party/*.c)  \
@@ -191,8 +199,8 @@ ifeq ($(UNAME),Darwin)
 		ECHO := echo
 
 		DIR_PREFIX = /Users/moses/Downloads
-		STD_PERIPH_DIR := $(shell ls -d $(DIR_PREFIX)/STM32F10x_StdPeriph_Lib_V3.6.?)
-		OPENOCD_PREFIX = $(DIR_PREFIX)/xpack-openocd-0.11.?-?
+#		STD_PERIPH_DIR := $(shell ls -d $(DIR_PREFIX)/STM32F10x_StdPeriph_Lib_V3.6.?)
+		OPENOCD_PREFIX = $(DIR_PREFIX)/xpack-openocd-0.12.?-?
 		GNU_PREFIX = $(DIR_PREFIX)/gcc-arm-none-eabi-10.?-202?.??/bin
 
 		CC := $(GNU_PREFIX)/arm-none-eabi-gcc
@@ -203,13 +211,12 @@ ifeq ($(UNAME),Darwin)
 		MSG_SUPRESS = > ./server.log 2>&1 
 		GDB_CMD = $(GNU_PREFIX)/arm-none-eabi-gdb-py
 		OPENOCD = $(OPENOCD_PREFIX)/bin/openocd
-		STLINK_CFG = $(OPENOCD_PREFIX)/scripts/interface/stlink.cfg
-		CHIP_CFG = $(OPENOCD_PREFIX)/scripts/target/stm32f1x.cfg 
+		CHIP_CFG = $(OPENOCD_PREFIX)/openocd/scripts/target/stm32f1x.cfg 
 
 		ifeq ($(DEBUGGER),0)
-		DEBUGGER_CFG = $(OPENOCD_PREFIX)/scripts/interface/stlink.cfg
+		DEBUGGER_CFG = $(OPENOCD_PREFIX)/openocd/scripts/interface/stlink.cfg
 		else 
-		DEBUGGER_CFG = $(OPENOCD_PREFIX)/scripts/interface/jlink.cfg
+		DEBUGGER_CFG = $(OPENOCD_PREFIX)/openocd/scripts/interface/jlink.cfg
 		endif
 
 endif
@@ -238,6 +245,9 @@ SGL_LIB_OBJECTS = $(addprefix $(SGL_BUILD_DIR)/,$(notdir $(SGL_SOURCES:.c=.o)))
 # Porject-wise Object files
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.c=.o)))
 
+PREPROCS = $(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.c=.I)))
+PREPROCS += $(addprefix $(STD_PERIPH_BUILD_DIR)/,$(notdir $(STD_PERIPH_LIB_SOURCES:.c=.I)))
+
 
 all : $(TARGET).elf 
 
@@ -258,11 +268,25 @@ $(TARGET).elf: $(STD_PERIPH_LIB_OBJECTS) $(OBJECTS) $(SGL_LIB_OBJECTS)
 	@$(CC) -c $(CCFLAGS) \
 		 $< -o $@
 
+# Building the Project Library preprocessor output files.
+ $(BUILD_DIR)/%.I: %.c
+	@mkdir -p $(BUILD_DIR)
+	@$(ECHO) "CC -E $@"
+	@$(CC) -E $(CCFLAGS) \
+		 $< -o $@
+
 # Building the StdPeriph Library Object files.
 $(STD_PERIPH_BUILD_DIR)/%.o: %.c
 	@mkdir -p $(STD_PERIPH_BUILD_DIR)
 	@$(ECHO) "CC $<"
 	@$(CC) -c $(CCFLAGS) \
+		 $< -o $@
+
+# Building the StdPeriph preprocessor Object files.
+$(STD_PERIPH_BUILD_DIR)/%.I: %.c
+	@mkdir -p $(STD_PERIPH_BUILD_DIR)
+	@$(ECHO) "CC -E $@"
+	@$(CC) -E $(CCFLAGS) \
 		 $< -o $@
 
 # Building the SGL Library Object files.
@@ -271,6 +295,8 @@ $(SGL_BUILD_DIR)/%.o: %.c
 	@$(ECHO) "CC $<"
 	@$(CC) -c $(CCFLAGS) \
 		 $< -o $@
+
+preproc : $(PREPROCS)
 
 
 strip : $(TARGET).elf
@@ -366,6 +392,7 @@ DEBUGGER_CFG = "C:\Program Files (x86)\GNU Arm Embedded Toolchain\xpack-openocd-
 endif
 endif
 
+TRANSPORT_SEL := -c "transport select swd"
 
 # test : 
 # 	$(info Current DEBUGGER is $(DEBUGGER))
@@ -400,8 +427,10 @@ run : $(TARGET).elf
 	@$(call COL,$(GREEN),Running $<)
 	@$(OPENOCD) -f $(DEBUGGER_CFG) -f $(CHIP_CFG) -c init -c "reset" -c "shutdown"
 
+
 flash :
 	$(OPENOCD) -f  $(DEBUGGER_CFG) \
+			$(TRANSPORT_SEL) \
 	       	-f  $(CHIP_CFG) \
 			-c init $(OPENOCD_DEBUG_CMDS)
 
