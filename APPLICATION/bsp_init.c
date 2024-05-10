@@ -57,8 +57,8 @@ void RCC_PeriphClock_Init(void)
    RCC_ADCCLKConfig(RCC_PCLK2_Div6);                        // Set ADC Clock Speed to : 12Mhz
 
    /* To use USART1 */
-   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO,ENABLE);    // Enable USART1 Clock
-   RCC_APB2PeriphClockCmd(RCC_APB1Periph_USART2 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_AFIO,ENABLE);    // Enable USART2 and related 
+   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);
+   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
 
 }
 
@@ -99,21 +99,20 @@ void USER_GPIO_Init(void)
   GPIO_Init(H2_SENSOR_TEST_GPIO_Port,&GPIO_InitStructure);
   GPIO_ResetBits(H2_SENSOR_TEST_GPIO_Port,H2_SENSOR_TEST_Pin);
 
-  // /* USART1 Pins */
-  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-  // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9; // USART1 Tx pin
-  // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  // GPIO_Init(GPIOA,&GPIO_InitStructure);
-  // GPIO_ResetBits(GPIOA,GPIO_Pin_9);
+  /* USART1 Pins */
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9; // USART1 Tx pin
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(GPIOA,&GPIO_InitStructure);
+  GPIO_ResetBits(GPIOA,GPIO_Pin_9);
 
-  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; // USART1 Rx pin
-  // GPIO_Init(GPIOA,&GPIO_InitStructure);
-  // GPIO_ResetBits(GPIOA,GPIO_Pin_10);
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; // USART1 Rx pin
+  GPIO_Init(GPIOA,&GPIO_InitStructure);
+  GPIO_ResetBits(GPIOA,GPIO_Pin_10);
 
   // //GPIO_PinRemapConfig(GPIO_Remap_USART1,ENABLE);
 
-  // /* USART2 Pins */
   // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   // GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2; // USART2 Tx pin
   // GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -219,17 +218,6 @@ void USER_USART_Init(void)
 
   USART_Init(USART1,&USART_InitStructure);
   USART_Cmd(USART1,ENABLE);
-
-  /* USART2 Init */
-  USART_InitStructure.USART_BaudRate = 115200;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-
-  USART_Init(USART2,&USART_InitStructure);
-  USART_Cmd(USART1,ENABLE);
-
+  
 
 }
