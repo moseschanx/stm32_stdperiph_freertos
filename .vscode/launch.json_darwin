@@ -14,8 +14,8 @@
             "interface": "swd",
             "armToolchainPath": "${userHome}/Downloads/gcc-arm-none-eabi-10.3-2021.10/bin/",
             "device" : "stm32f10x",
-            "svdFile" : "${workspaceRoot}${/}device${/}STM32F103xx.svd",
-//            "svdFile" : "${workspaceRoot}\\device\\ARMCM3.svd",   //For cm3 core peripherals
+//            "svdFile" : "${workspaceRoot}${/}device${/}STM32F103xx.svd",
+            "svdFile" : "${workspaceRoot}${/}device${/}ARMCM3.svd",   //For cm3 core peripherals
             "servertype": "openocd",
             "searchDir": ["${userHome}/Downloads/xpack-openocd-0.12.0-3/openocd/scripts/target/",
                           "${userHome}/Downloads/xpack-openocd-0.12.0-3/openocd/scripts/interface/",
