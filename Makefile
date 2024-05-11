@@ -28,11 +28,11 @@ SEMIHOST = 0
 #############################################################################
 
 ######################  If enabling segger-rtt support  #####################
-USE_SEGGER_RTT = 1
+USE_SEGGER_RTT = 0
 #############################################################################
 
 ######################  If enabling SGL support  ############################
-USE_SGL = 1
+USE_SGL = 0
 #############################################################################
 
 ######################  Debugger Config #####################################
@@ -50,6 +50,10 @@ MACROS = -D 'assert_param(expr)=((void)0)' \
 
 ifeq ($(USE_SEGGER_RTT),1)
 MACROS += -D USE_SEGGER_RTT
+endif
+
+ifeq ($(USE_SGL),1)
+MACROS += -D USE_SGL
 endif
 
 #############################################################################
@@ -154,7 +158,10 @@ endif
 # Prerequisits file looking up path for GNU make
 vpath %.c $(sort $(dir $(SOURCES))) 
 vpath %.c $(sort $(dir $(STD_PERIPH_LIB_SOURCES)))
+
+ifeq ($(USE_SGL),1)	 
 vpath %.c $(sort $(dir $(SGL_SOURCES)))
+endif
 
 
 ### Toolchain Settings ###
@@ -429,7 +436,7 @@ run : $(TARGET).elf
 
 
 flash :
-	$(OPENOCD) -f  $(DEBUGGER_CFG) \
+	@$(OPENOCD) -f  $(DEBUGGER_CFG) \
 			$(TRANSPORT_SEL) \
 	       	-f  $(CHIP_CFG) \
 			-c init $(OPENOCD_DEBUG_CMDS)
