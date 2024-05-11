@@ -74,6 +74,19 @@
 				"kind": "build",
 				"isDefault": false
 			}
-		}
+		},
+		{
+			"label": "preproc",
+			"type": "shell",
+			"command": "make preproc",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+
 	]
 }
