@@ -1,18 +1,18 @@
-#include <stdlib.h>
-#include <stdio.h>
+// #include <stdlib.h>
+// #include <stdio.h>
+#include <stdarg.h>
 #include "common.h"
 //#include <stdio.h>
 #include "test.h"
-#include "sgl.h"
 
-void uart_print(char* str, ...);
+void uart_printf(char* str, ...);
 
 
-#ifndef dbg_printf(str,...)
+#ifndef dbg_printf
 #ifdef USE_SEGGER_RTT
-#define dbg_printf(str,...) rtt_printf(fmt,__VA__ARGS__)
-#else 
-#define dbg_printf(str,...) uart_printf(fmt,__VA__ARGS__)
+#define dbg_printf(fmt , ...) rtt_printf(fmt , ##__VA_ARGS__)
+#else
+#define dbg_printf(fmt , ...) uart_printf(fmt , ##__VA_ARGS__)
 #endif
 #endif
 
@@ -51,7 +51,7 @@ uint32_t strlen(char *str)
 void MCU_Init(void)
 {
   
- rtt_printf("System Initialization Begin.\n ");
+// dbg_printf("System Initialization Begin.\n ");   // This line must be commented out before USRAT Initialized.
 
   /* RCC Config */
 if (RCC_ClockConfig() != SUCCESS)
@@ -69,7 +69,7 @@ SysTick_Init();
 
  USER_USART_Init();
 
-rtt_printf("System Initialization End.\n");
+dbg_printf("System Initialization End.\n");
 
 // SWO_PrintString("Test printing\n");
 
@@ -105,10 +105,12 @@ rtt_printf("System Initialization End.\n");
   
 } 
 
- void tft_show_window(int16_t x1, int16_t y1, int16_t x2, int16_t y2, const sgl_color_t *src)
+#ifdef USE_SGL
+void tft_show_window(int16_t x1, int16_t y1, int16_t x2, int16_t y2, const sgl_color_t *src)
  {
     LCD_Fill(x1, y1, x2, y2, src);
  }
+#endif
 
 
 int stdout_device(char *str)
@@ -123,9 +125,10 @@ int main()
   
   MCU_Init();
   //delay_ms(62);
-  LCD_Init();
+//  LCD_Init();
   //English_Font_test();
 //  Touch_Test();
+  // sgl_init();
 
   
 
@@ -135,12 +138,15 @@ int main()
    while(1)
    {
 
+  //  sgl_task_handler();
+
   /* blinky */
 	GPIO_ResetBits(GPIOA,GPIO_Pin_8);
 	delay_ms(10);
 	GPIO_SetBits(GPIOA,GPIO_Pin_8);
 	delay_ms(10);
 
+//  dbg_printf("Program main loop!\n");
   // uart_print("Program main loop!\n");
 
   // rtt_printf("Program main loop!\n");
@@ -156,13 +162,14 @@ int main()
 
 }
 
-void uart_print(char* str,...)
+void uart_printf(char* str,...)
 {
 
   va_list ParamList;
 
     while(*str!='\0')
     {
+      while(USART_GetFlagStatus(USART1,USART_FLAG_TXE) == RESET); // If dont wait TXE, The first character might not sent through.
       USART_SendData(USART1,*str++);
       while(USART_GetFlagStatus(USART1,USART_FLAG_TC) == RESET);
     }
