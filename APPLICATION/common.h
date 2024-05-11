@@ -11,6 +11,10 @@
 #include "bsp_init.h"
 #include "SEGGER_RTT.h"
 
+#ifdef USE_SGL
+#include "sgl.h"
+#endif
+
 /* 3rd Party Lib Support */
 //#include "ftos.h"
 
