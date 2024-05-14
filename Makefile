@@ -32,7 +32,7 @@ USE_SEGGER_RTT = 0
 #############################################################################
 
 ######################  If enabling SGL support  ############################
-USE_SGL = 0
+USE_SGL = 1
 #############################################################################
 
 ######################  Debugger Config #####################################
@@ -58,7 +58,7 @@ endif
 
 #############################################################################
 
-ARCH_CFG = -march=armv7-m -mthumb
+ARCH_CFG = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft 
 
 # -march=armv7-m : ARM Cortex-M3 architecture
 # -mthumb : generate thumb instructions
@@ -66,27 +66,36 @@ ARCH_CFG = -march=armv7-m -mthumb
 # -Os : optimize for size
 # -std=gnu11 : use GNU C11 standard
 # -g : generate debugging information
-CCFLAGS = $(ARCH_CFG) -Wall -Og -std=c99 -g $(INCLUDES) $(MACROS)
-LDFLAGS = $(LIB_PATH) -Tstm32f103xx.ld  
+CCFLAGS = $(ARCH_CFG) -Wall -Og -std=c99 -g3 $(INCLUDES) $(MACROS)
+LDFLAGS =  -Tstm32f1x_64KB_flash.ld 
 #LDFLAGS += -nostdlib
+LDFLAGS += -static
 LDFLAGS += -specs=nosys.specs
-LDFLAGS += -lm -lnosys
+LDFLAGS += -mcpu=cortex-m3
+#LDFLAGS += -mfloat-abi=soft -mthumb
+#LDFLAGS += -specs=nano.specs
+#LDFLAGS += -Wl,--start-group
+#LDFLAGS += -lc
+LDFLAGS += -lm 
+#LDFLAGS += -Wl,--end-group
+
+ifeq ($(USE_CYGWIN),1)
+#Test if linking to the wrong libs under windows orther wise just delete this path spec.
 #LIB_PATH += -L$(CYGWIN_TOOLCHAIN_PREFIX)/$(TOOLCHAIN_VER)/arm-none-eabi/lib/
+endif
 
 # Creating the map file
-# -Wl : pass the following argument to the linker
 LDFLAGS += -Wl,-Map=$(BUILD_DIR)/$(TARGET).map
 
 ### Optmization for ELF size heavily
-# --gc-sections : garbage collect unused sections
 LDFLAGS += -Wl,--gc-sections
-# -ffunction-sections : place each function in its own section
-# -fdata-sections : place each data object in its own section
 CCFLAGS += -ffunction-sections -fdata-sections
 
 ### Suppresing compiler warnings ###
 CCFLAGS += -Wno-strict-aliasing
 CCFLAGS += -Wno-maybe-uninitialized
+CCFLAGS += -Wno-missing-braces
+CCFLAGS += 
 
 
 
@@ -121,17 +130,18 @@ endif
 
 
 STD_PERIPH_LIB_SOURCES = \
+			$(wildcard $(STD_PERIPH_DIR)/Libraries/CMSIS/CM3/CoreSupport/*.c) \
 			$(wildcard $(STD_PERIPH_DIR)/Libraries/STM32F10x_StdPeriph_Driver/src/*.c)  
 
 SOURCES =  \
-			$(wildcard $(STD_PERIPH_DIR)/Libraries/CMSIS/CM3/CoreSupport/core_cm3.c) \
             $(wildcard ./*.c)  \
-            $(wildcard ./system/*.c)  \
             $(wildcard ./3rd-party/*.c)  \
             $(wildcard ./application/*.c)  \
 			
-SOURCES +=  $(wildcard ./drivers/*.c)
+SOURCES +=  $(wildcard ./drivers/*.c) \
+            $(wildcard ./system/*.c)  
 
+ASM_SOURCES =	$(wildcard ./*.s)
 
 ######################################
 # SGL sources
@@ -158,6 +168,7 @@ endif
 # Prerequisits file looking up path for GNU make
 vpath %.c $(sort $(dir $(SOURCES))) 
 vpath %.c $(sort $(dir $(STD_PERIPH_LIB_SOURCES)))
+vpath %.s $(sort $(dir $(ASM_SOURCES)))
 
 ifeq ($(USE_SGL),1)	 
 vpath %.c $(sort $(dir $(SGL_SOURCES)))
@@ -220,6 +231,7 @@ ifeq ($(UNAME),Darwin)
 		OPENOCD = $(OPENOCD_PREFIX)/bin/openocd
 		CHIP_CFG = $(OPENOCD_PREFIX)/openocd/scripts/target/stm32f1x.cfg 
 
+
 		ifeq ($(DEBUGGER),0)
 		DEBUGGER_CFG = $(OPENOCD_PREFIX)/openocd/scripts/interface/stlink.cfg
 		else 
@@ -251,6 +263,7 @@ SGL_LIB_OBJECTS = $(addprefix $(SGL_BUILD_DIR)/,$(notdir $(SGL_SOURCES:.c=.o)))
 
 # Porject-wise Object files
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.c=.o)))
+OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 
 PREPROCS = $(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.c=.I)))
 PREPROCS += $(addprefix $(STD_PERIPH_BUILD_DIR)/,$(notdir $(STD_PERIPH_LIB_SOURCES:.c=.I)))
@@ -272,6 +285,12 @@ $(TARGET).elf: $(STD_PERIPH_LIB_OBJECTS) $(OBJECTS) $(SGL_LIB_OBJECTS)
  $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(BUILD_DIR)
 	@$(ECHO) "CC $<"
+	@$(CC) -c $(CCFLAGS) \
+		 $< -o $@
+
+ $(BUILD_DIR)/%.o: %.s
+	@mkdir -p $(BUILD_DIR)
+	@$(ECHO) "AS $<"
 	@$(CC) -c $(CCFLAGS) \
 		 $< -o $@
 
@@ -329,7 +348,7 @@ tags : clean_tags
 # Only clean project related files, keep sub-folders/3-rdparty lib content.
 clean :
 	@$(call COL,$(GREEN),Cleaning output files)
-	@$(RM)  *.o *.s *_debug *_disa *_bin *_layout *.elf *.map *.swp *.log 
+	@$(RM)  *.o *_debug *_disa *_bin *_layout *.elf *.map *.swp *.log 
 	@$(RM) $(BUILD_DIR)/*.o $(BUILD_DIR)/*.map
 	@$(call COL,$(LIGHT_GREEN),Finished.)
 
