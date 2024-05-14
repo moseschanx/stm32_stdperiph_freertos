@@ -3,6 +3,8 @@
 
 
 #include <stdint.h>
+#include <stdarg.h>
+#include <math.h>
 /* Common include files */
 //#include "SWO.h"
 #include "stm32f10x.h"
@@ -19,10 +21,10 @@
 //#include "ftos.h"
 
 /* Driver include files */
-//#include "delay.h"
-//#include "sys.h"
-//#include "lcd.h"
-//#include "touch.h"
+#include "delay.h"
+#include "sys.h"
+#include "lcd.h"
+#include "touch.h"
 #include "gui.h"
 
 
@@ -37,6 +39,13 @@ extern __IO uint16_t ADCConvertedValue[8];
 #endif
 
 
+#ifndef dbg_printf
+#ifdef USE_SEGGER_RTT
+#define dbg_printf(fmt , ...) rtt_printf(fmt , ##__VA_ARGS__)
+#else
+#define dbg_printf(fmt , ...) uart_printf(fmt , ##__VA_ARGS__)
+#endif
+#endif
 /**** TODOs : Implement more useful macro portings here , especially with colors ****/
 
 /* SEGGER RTT Printf */ 
