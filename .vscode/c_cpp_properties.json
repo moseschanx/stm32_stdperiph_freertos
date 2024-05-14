@@ -4,23 +4,23 @@
             "name": "Win32",
             "includePath": [
                 "${default}",
-                "${workspaceRoot}\\APPLICATION\\",
-                "${workspaceRoot}\\SEGGER_RTT",
-                "${workspaceRoot}\\DRIVERS",
-                "${workspaceRoot}\\STM32F10x_StdPeriph_Lib_V3.6.0\\Libraries\\STM32F10x_StdPeriph_Driver\\inc",
-                "${workspaceRoot}\\STM32F10x_StdPeriph_Lib_V3.6.0\\Libraries\\CMSIS\\CM3\\CoreSupport",
-                "${workspaceRoot}\\STM32F10x_StdPeriph_Lib_V3.6.0\\Libraries\\CMSIS\\CM3\\DeviceSupport\\ST\\STM32F10x",
+                "${workspaceRoot}${/}APPLICATION${/}",
+                "${workspaceRoot}${/}SEGGER_RTT",
+                "${workspaceRoot}${/}DRIVERS",
+                "${workspaceRoot}${/}SYSTEM",
+                "${workspaceRoot}${/}STM32F10x_StdPeriph_Lib_V3.6.0${/}Libraries${/}STM32F10x_StdPeriph_Driver${/}inc",
+                "${workspaceRoot}${/}STM32F10x_StdPeriph_Lib_V3.6.0${/}Libraries${/}CMSIS${/}CM3${/}CoreSupport",
+                "${workspaceRoot}${/}STM32F10x_StdPeriph_Lib_V3.6.0${/}Libraries${/}CMSIS${/}CM3${/}DeviceSupport${/}ST${/}STM32F10x",
                 "C:\\Program Files (x86)\\GNU Arm Embedded Toolchain\\10 2021.10\\lib\\gcc\\arm-none-eabi\\10.3.1\\include",
-                "${workspaceRoot}\\sgl\\source"
+                "${workspaceRoot}${/}sgl${/}source"
 
             ],
             "defines": [
-                "_DEBUG",
-                "UNICODE",
+                "STM32F10X_HD",
+                "USE_STDPERIPH_DRIVER",
                 "_UNICODE"
             ],
-            "windowsSdkVersion": "10.0.17763.0",
-            "intelliSenseMode": "windows-msvc-x64"
+            "intelliSenseMode": "gcc-arm"
         }
     ],
     "version": 4
