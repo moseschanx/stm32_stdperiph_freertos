@@ -1,51 +1,6 @@
-// #include <stdlib.h>
-// #include <stdio.h>
-#include <stdarg.h>
 #include "common.h"
-//#include <stdio.h>
-#include "test.h"
 
 void uart_printf(char* str, ...);
-
-
-#ifndef dbg_printf
-#ifdef USE_SEGGER_RTT
-#define dbg_printf(fmt , ...) rtt_printf(fmt , ##__VA_ARGS__)
-#else
-#define dbg_printf(fmt , ...) uart_printf(fmt , ##__VA_ARGS__)
-#endif
-#endif
-
-
-/* Memroy management function definitions */
-void* memcpy(void *dst, const void *src, uint32_t size) {
-    char *d = (char*) dst;
-    const char *s = (const char*) src;
-
-    for (int i = 0; i < size; ++i) {
-        *d++ = *s++;
-    }
-
-    return dst;
-}
-void* memset(void *dst, int val, unsigned size) {
-    uint8_t *byte_dst = (uint8_t*) dst; // Cast to uint8_t* for byte-level access
-
-    for (unsigned i = 0; i < size; ++i) {
-        byte_dst[i] = (uint8_t) val; // Assign the value to each byte, casting to uint8_t to ensure it's within range
-    }
-
-    return dst; // Return the destination pointer
-}
-uint32_t strlen(char *str)
-{
-  uint32_t len = 0;
-  while(str[len] != '\0')
-  {
-    len++;
-  }
-  return len;
-}
 
 
 void MCU_Init(void)
@@ -59,13 +14,14 @@ if (RCC_ClockConfig() != SUCCESS)
 
 RCC_PeriphClock_Init();
 
-SysTick_Init();
+  SysTick_Init();
+  delay_init();
 
- USER_DMA_Init();
+// USER_DMA_Init();
 
  USER_GPIO_Init();
 
- USER_ADC_Init();
+ //USER_ADC_Init();
 
  USER_USART_Init();
 
@@ -105,19 +61,12 @@ dbg_printf("System Initialization End.\n");
   
 } 
 
-#ifdef USE_SGL
-void tft_show_window(int16_t x1, int16_t y1, int16_t x2, int16_t y2, const sgl_color_t *src)
- {
-    LCD_Fill(x1, y1, x2, y2, src);
- }
-#endif
 
 
-int stdout_device(char *str)
-{
-    //return rtt_printf("%s\n", str);
-    uart_print(str);
-}
+// int stdout_device(char *str) {
+//     //return rtt_printf("%s\n", str);
+//     uart_printf(str);
+// }
 
 
 int main()
@@ -125,11 +74,15 @@ int main()
   
   MCU_Init();
   //delay_ms(62);
-//  LCD_Init();
-  //English_Font_test();
-//  Touch_Test();
-  // sgl_init();
 
+  
+//  English_Font_test();
+ // Touch_Test();
+  sgl_main();
+
+
+  
+  
   
 
   //English_Font_test();
@@ -138,15 +91,17 @@ int main()
    while(1)
    {
 
-  //  sgl_task_handler();
+  //Touch_Test();
+        sgl_tick_inc(5);
+        sgl_task_handler();
 
   /* blinky */
-	GPIO_ResetBits(GPIOA,GPIO_Pin_8);
-	delay_ms(10);
-	GPIO_SetBits(GPIOA,GPIO_Pin_8);
-	delay_ms(10);
+	// GPIO_ResetBits(GPIOA,GPIO_Pin_8);
+	// delay_ms(200);
+	// GPIO_SetBits(GPIOA,GPIO_Pin_8);
+	// delay_ms(200);
 
-//  dbg_printf("Program main loop!\n");
+  // dbg_printf("Program main loop!\n");
   // uart_print("Program main loop!\n");
 
   // rtt_printf("Program main loop!\n");
