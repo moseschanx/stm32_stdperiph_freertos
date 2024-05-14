@@ -15,7 +15,7 @@ SECTIONS
 			_stext = .;
 		KEEP(*(.isr_vector))
 		*(.text)
-		*(.rodata)
+		*(.rodata*)
 		. = ALIGN(4);
 			_etext = .;
 
@@ -24,17 +24,17 @@ SECTIONS
 	.data :
 	{
 			_sdata = .;
-		*(.data)
+		*(.data*)
 		. = ALIGN(4);
 			_edata = .;
 
-	} > SRAM AT> FLASH
+	} > SRAM AT > FLASH
 
 	.bss :
 	{
 			_sbss = .;
 			__bss_start__ = .;
-		*(.bss)
+		*(.bss*)
 		*(COMMON) 
 		. = ALIGN(4);
 			_ebss = .;
