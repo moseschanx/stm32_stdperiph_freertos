@@ -33,27 +33,27 @@ typedef unsigned int size_t;
 #define SGL_CONFIG_LOG_LEVEL                  0
 
 
-//¿ªÆô¶¯»­£ºTODO
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½TODO
 #define SGL_CONFIG_POWERON_ANIM               0
 
-//ÅäÖÃ×ÖÌå¿¹¾â³ÝÉî¶È£¬Ä¬ÈÏ²ÉÓÃ4bit¿¹¾â³Ý
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å¿¹ï¿½ï¿½ï¿½ï¿½ï¿½È£ï¿½Ä¬ï¿½Ï²ï¿½ï¿½ï¿½4bitï¿½ï¿½ï¿½ï¿½ï¿½
 #define SGL_CONFIG_FONT_PIXEL_BIT             4
 
 
-//ÏÔÊ¾ÆÁÃæ°åµÄÏñËØÑÕÉ«Éî¶È£¬Ä¬ÈÏÎª32bit
+//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½È£ï¿½Ä¬ï¿½ï¿½Îª32bit
 #define SGL_CONFIG_PANEL_PIXEL_DEPTH          16
 
-//FrameBufferÊÇ·ñÊÇÄÚ´æÓ³Éä·½Ê½
+//FrameBufferï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ú´ï¿½Ó³ï¿½ä·½Ê½
 #define SGL_CONFIG_FRAMEBUFFER_MMAP           0
 
-//Ä¬ÈÏpage±³¾°ÑÕÉ«
+//Ä¬ï¿½ï¿½pageï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
 #define SGL_CONFIG_PAGE_COLOR                 SGL_WHITE
 
-//RGBÑÕÉ«½»»»
-#define SGL_CONFIG_COLOR16_SWAP               0
+//RGBï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½
+#define SGL_CONFIG_COLOR16_SWAP               1
 
-//1: standard»ìÉ«
-//2: fast»ìÉ«
+//1: standardï¿½ï¿½É«
+//2: fastï¿½ï¿½É«
 #define SGL_CONFIG_MIXER_TYPE                 2
 
 //0: heap_0
@@ -64,18 +64,18 @@ typedef unsigned int size_t;
 //5: heap_tlsf
 //6: libc
 #define SGL_CONFIG_HEAP_POLICY                5
-//¶¨ÒåÄÚ´æ³ØµÄ´óÐ¡£¬µ¥Î»KByte
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ØµÄ´ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½Î»KByte
 #define SGL_CONFIG_HEAP_POOL_SIZE             32
 
 
-//¶¨ÒåÊÂ¼þµÄ¶ÓÁÐÉî¶È
+//ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define SGL_CONFIG_EVQUEUE_DEPTH              16
 
-//¶¨ÒåÈÎÎñµÄ¶ÓÁÐÉî¶È
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define SGL_CONFIG_TASKQUEUE_DEPTH            8
 
 
-//ÊÇ·ñ¿ªÆôSGL×ÖÌå
+//ï¿½Ç·ï¿½ï¿½ï¿½SGLï¿½ï¿½ï¿½ï¿½
 #define SGL_CONFIG_FONT_CONSOLAS12            1
 #define SGL_CONFIG_FONT_CONSOLAS15            1
 #define SGL_CONFIG_FONT_SONG10                1
