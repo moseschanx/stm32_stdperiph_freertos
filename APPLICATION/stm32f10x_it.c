@@ -171,6 +171,11 @@ void ADC1_2_IRQHandler(void)
   rtt_printf("ADC EOC Triggered!\n");
 }
 
+void USART1_Handler(void)
+{
+
+}
+
 /**
   * @}
   */ 
