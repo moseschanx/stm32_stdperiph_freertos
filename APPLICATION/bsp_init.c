@@ -1,7 +1,7 @@
 #include "common.h"
 #include "bsp_init.h"
 
-__IO uint16_t ADCConvertedValue[8] = {0};
+__IO uint16_t ADCConvertedValue[8] = {0,1,2,3,4,5,6,7};
 
 static ADC_InitTypeDef ADC_InitStructure = {0};
 static DMA_InitTypeDef DMA_InitStructure = {0};
@@ -66,7 +66,7 @@ void RCC_PeriphClock_Init(void)
 
 void SysTick_Init(void)
 {
-  if (SysTick_Config(SystemCoreClock / 10000))
+  if (SysTick_Config(SystemCoreClock / 1000))
   { 
     /* Capture error */ 
     while (1);
