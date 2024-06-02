@@ -221,3 +221,23 @@ void USER_USART_Init(void)
   
 
 }
+
+void USER_NVIC_Init()
+{
+
+	   /* USART1 NVIC Config */
+   NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+   NVIC_Init(&NVIC_InitStructure);
+
+	   /* USART2 NVIC Config */
+   NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;
+   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+   NVIC_Init(&NVIC_InitStructure);
+  
+
+}
