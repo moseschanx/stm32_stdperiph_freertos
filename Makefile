@@ -124,8 +124,8 @@ ifeq ($(USE_SGL),1)
 				-I$(SGL_DIR)/draw \
 				-I$(SGL_DIR)/fonts \
 				-I$(SGL_DIR)/widget \
-				-I$(SGL_DIR)/libs \
-				-I$(SGL_DIR)/libs/heap \
+				-I$(SGL_DIR)/stdlib \
+				-I$(SGL_DIR)/stdlib/heap \
 				
 endif
 
@@ -156,8 +156,9 @@ SGL_SOURCES = $(wildcard $(SGL_DIR)/*.c)  \
 			  $(wildcard $(SGL_DIR)/fonts/*.c)  \
 			  $(wildcard $(SGL_DIR)/widget/*.c)  \
 
-SGL_SOURCES += $(wildcard $(SGL_DIR)/libs/*.c)
-SGL_SOURCES += $(wildcard $(SGL_DIR)/libs/heap/*.c)
+SGL_SOURCES += $(wildcard $(SGL_DIR)/stdlib/*.c)
+SGL_SOURCES += $(wildcard $(SGL_DIR)/stdlib/heap/*.c)
+SGL_SOURCES += $(wildcard ./application/sgl/*.c)
 
 endif
 
