@@ -76,6 +76,20 @@
 			}
 		},
 		{
+			"label": "run",
+			"type": "shell",
+			"command": "make run",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+//				"clean",
+//				"build"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			}
+		},
+		{
 			"label": "preproc",
 			"type": "shell",
 			"command": "make preproc",
