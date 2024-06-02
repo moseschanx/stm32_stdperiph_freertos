@@ -6,7 +6,10 @@ sgl_color_t tft_draw_buffer[20 * 240] = {0};
 
 void tft_show_window(int16_t x1, int16_t y1, int16_t x2, int16_t y2, const sgl_color_t *src)
  {
-    LCD_Fill(x1, y1, x2, y2, src);
+    uint16_t* pcolor = (uint16_t*)src;
+    LCD_SetWindows(x1,y1,x2,y2);
+    for(int i=0;i<(x2-x1)*(y2-y1);++i)
+        Lcd_WriteData_16Bit(*pcolor++);
  }
 
 int stdout_device(const char *str)
@@ -142,9 +145,9 @@ int sgl_main()
     sgl_appstart_set_text(app, "APP");
     sgl_appstart_set_font(app, &song10);
 
-    while (1)
-    {
-        sgl_tick_inc(5);
-        sgl_task_handler();
-    }
+    // while (1)
+    // {
+    //     sgl_tick_inc(5);
+    //     sgl_task_handler();
+    // }
 }
