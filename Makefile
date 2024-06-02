@@ -66,10 +66,10 @@ ARCH_CFG = -mcpu=cortex-m3 -mthumb -mfloat-abi=soft
 # -Os : optimize for size
 # -std=gnu11 : use GNU C11 standard
 # -g : generate debugging information
-CCFLAGS = $(ARCH_CFG) -Wall -Og -std=c99 -g3 $(INCLUDES) $(MACROS)
+CCFLAGS = $(ARCH_CFG) -Wall -O3 -std=c99 -g3 $(INCLUDES) $(MACROS)
 LDFLAGS =  -Tstm32f1x_64KB_flash.ld 
 #LDFLAGS += -nostdlib
-LDFLAGS += -static
+#LDFLAGS += -static
 LDFLAGS += -specs=nosys.specs
 LDFLAGS += -mcpu=cortex-m3
 #LDFLAGS += -mfloat-abi=soft -mthumb
@@ -113,6 +113,7 @@ INCLUDES = \
 			-I$(STD_PERIPH_DIR)/Libraries/STM32F10x_StdPeriph_Driver/inc \
 			-ISEGGER_RTT \
 			-IAPPLICATION \
+			-IAPPLICATION/sgl \
 			-IDRIVERS \
 			-ISYSTEM \
 			-I. \
@@ -140,6 +141,7 @@ SOURCES =  \
 			
 SOURCES +=  $(wildcard ./drivers/*.c) \
             $(wildcard ./system/*.c)  
+
 
 ASM_SOURCES =	$(wildcard ./*.s)
 
