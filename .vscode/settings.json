@@ -24,5 +24,8 @@
         "24cxx.h": "c",
         "math.h": "c"
     },
-    "cortex-debug.variableUseNaturalFormat": false
+    "cortex-debug.variableUseNaturalFormat": false,
+    "cortex-debug.armToolchainPath.osx": "${userHome}/Downloads/gcc-arm-none-eabi-10.3-2021.10/bin/",
+    "cortex-debug.openocdPath.osx": "${userHome}/Downloads/xpack-openocd-0.12.0-3/bin/openocd",
+    "cortex-debug.gdbPath.osx": "${userHome}/Downloads/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gdb",
 }
