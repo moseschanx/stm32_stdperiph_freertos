@@ -350,7 +350,7 @@ u8 TP_Get_Adjdata(void)
 	if(tempfac==0X0A)//�������Ѿ�У׼����			   
 	{    												 
 		tempfac=AT24CXX_ReadLenByte(SAVE_ADDR_BASE,4);		   
-		tp_dev.xfac=(float)(tempfac/100000000);//�õ�xУ׼����
+		tp_dev.xfac=(float)tempfac/100000000;//�õ�xУ׼����
 		tempfac=AT24CXX_ReadLenByte(SAVE_ADDR_BASE+4,4);			          
 		tp_dev.yfac=(float)tempfac/100000000;//�õ�yУ׼����
 	    //�õ�xƫ����
